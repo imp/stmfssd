@@ -12,27 +12,27 @@
 extern "C" {
 #endif
 
-#define	STMF_SSD_IOCTL			0x53534400	/* "SSDx" */
-#define	STMF_SSD_GET_VERSION		(STMF_SSD_IOCTL | 0)
-#define	STMF_SSD_LIST_DEV		(STMF_SSD_IOCTL | 1)
-#define	STMF_SSD_CREATE_DEV		(STMF_SSD_IOCTL | 2)
-#define	STMF_SSD_REMOVE_DEV		(STMF_SSD_IOCTL | 3)
+#define	STMFSSD_IOCTL		0x53534400	/* "SSDx" */
+#define	STMFSSD_GET_VERSION	(STMFSSD_IOCTL | 0)
+#define	STMFSSD_LIST_DEV	(STMFSSD_IOCTL | 1)
+#define	STMFSSD_CREATE_DEV	(STMFSSD_IOCTL | 2)
+#define	STMFSSD_REMOVE_DEV	(STMFSSD_IOCTL | 3)
 
-#define	STMF_SSD_ABI_VERSION_0	0
-#define	STMF_SSD_ABI_VERSION_1	1
-#define	STMF_SSD_ABI_VERSION		STMF_SSD_ABI_VERSION_1
+#define	STMFSSD_ABI_VERSION_0	0
+#define	STMFSSD_ABI_VERSION_1	1
+#define	STMFSSD_ABI_VERSION	STMFSSD_ABI_VERSION_1
 
 typedef struct {
 	uint32_t	version;	/* ABI version    */
 	uint32_t	opcode;		/* Operation code */
 	size_t		len;		/* Payload length */
-} stmf_ssd_cmd_t;
+} stmfssd_cmd_t;
 
 typedef struct {
 	uint32_t	version;
 	uint32_t	status;
 	size_t		len;
-} stmf_ssd_reply_t;
+} stmfssd_reply_t;
 
 typedef struct {
 	int		devtype;	/* Emulated tape type */
@@ -42,12 +42,12 @@ typedef struct {
 	int		unused1;	/* Placeholder */
 	int		unused2;	/* Placeholder */
 	char		dev[1];		/* The unique device name */
-} stmf_ssd_create_dev_cmd_t;
+} stmfssd_create_dev_cmd_t;
 
 typedef struct {
 	minor_t		minor;		/* Minor node to remove */
         char            dev[1];         /* Device name to remove */
-} stmf_ssd_remove_dev_cmd_t;
+} stmfssd_remove_dev_cmd_t;
 
 #ifdef	__cplusplus
 }

@@ -79,17 +79,16 @@ stmf_ssd_close(dev_t dev, int flag, int otyp, cred_t *cp)
 }
 
 /*
- * Creates a new LU with cache and mapping to existing SCSI device
+ * Create a new SCSI Stream Device instance
  *
  * The order of creation:
  * 1. Allocate new minor number
  * 2. Allocate soft state
- * 3. Store the device name
+ * 3. Store the backing store device/file name
  * 4. Get LDI identification
- * 5. open the target device
- * 6. Allocate cache
- * 7. Register LU with STMF
- * 8. Create minor nodes
+ * 5. open the backing store device
+ * 6. Register LU with STMF
+ * 7. Create minor nodes
  */
 #define	BUF_SIZE		128
 
@@ -97,18 +96,18 @@ static int
 stmf_ssd_create_dev(stmfssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 {
 	char			buf[BUF_SIZE];
-	stmf_ssd_cmd_t		cmd;
+	stmfssd_cmd_t		cmd;
 	dev_t			dev;
 	minor_t			minor;
 	stmfssd_state_t		*nsp;
-	stmf_ssd_create_dev_cmd_t	*cdcp;
+	stmfssd_create_dev_cmd_t	*cdcp;
 
 	/* Bring the command in */
 	if (ddi_copyin((void*)arg, &cmd, sizeof (cmd), mode) != 0) {
 		return (EFAULT);
 	}
 
-	if (cmd.version != STMF_SSD_ABI_VERSION_1) {
+	if (cmd.version != STMFSSD_ABI_VERSION_1) {
 		return (EINVAL);
 	}
 
@@ -121,7 +120,7 @@ stmf_ssd_create_dev(stmfssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 		return (EFAULT);
 	}
 
-	cdcp = (stmf_ssd_create_dev_cmd_t *)buf;
+	cdcp = (stmfssd_create_dev_cmd_t *)buf;
 
 	/* Search for first available minor number */
 	for (minor = 1; ddi_get_soft_state(stmfssd_statep, minor) != NULL; minor++)
@@ -154,7 +153,7 @@ stmf_ssd_create_dev(stmfssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 		return (ENOMEM);
 	}
 
-	(void) snprintf(buf, sizeof (buf), "%d,raw", minor);
+	(void) snprintf(buf, sizeof (buf), "%d", minor);
 
 	if (ddi_create_minor_node(sp->dip, buf, S_IFCHR, minor, DDI_PSEUDO,
 	    NULL) != DDI_SUCCESS) {
@@ -164,25 +163,14 @@ stmf_ssd_create_dev(stmfssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 		return (ENXIO);
 	}
 
-	(void) snprintf(buf, sizeof (buf), "%d", minor);
-
-	if (ddi_create_minor_node(sp->dip, buf, S_IFBLK, minor, DDI_PSEUDO,
-	    NULL) != DDI_SUCCESS) {
-		(void) snprintf(buf, sizeof (buf), "%d,raw", minor);
-		ddi_remove_minor_node(sp->dip, buf);
-		lu_remove(nsp);
-		refstr_rele(nsp->dev);
-		ddi_soft_state_free(stmfssd_statep, minor);
-	}
-
 	return (0);
 }
 
 static int
 stmf_ssd_remove_dev(stmfssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 {
-	stmf_ssd_cmd_t		cmd;
-	stmf_ssd_remove_dev_cmd_t	dev;
+	stmfssd_cmd_t		cmd;
+	stmfssd_remove_dev_cmd_t	dev;
 	stmfssd_state_t		*nsp;
 	char			buf[BUF_SIZE];
 
@@ -191,7 +179,7 @@ stmf_ssd_remove_dev(stmfssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 		return (EFAULT);
 	}
 
-	if (cmd.version != STMF_SSD_ABI_VERSION_1) {
+	if (cmd.version != STMFSSD_ABI_VERSION_1) {
 		return (EINVAL);
 	}
 
@@ -223,26 +211,26 @@ stmf_ssd_ctl_ioctl(stmfssd_state_t *sp, int cmd, intptr_t arg, int mode,
     cred_t *crp, int *rvp)
 {
 	int		rc = 0;
-	stmf_ssd_reply_t	reply;
+	stmfssd_reply_t	reply;
 
-	reply.version = STMF_SSD_ABI_VERSION_1;
+	reply.version = STMFSSD_ABI_VERSION_1;
 	reply.status = 0;
 	reply.len = 0;
 
 	switch (cmd) {
-	case STMF_SSD_GET_VERSION:
+	case STMFSSD_GET_VERSION:
 		if (ddi_copyout(&reply, (void*)arg,
 		    sizeof (reply), mode) != 0) {
 			rc = EFAULT;
 		}
 		break;
-	case STMF_SSD_LIST_DEV:
+	case STMFSSD_LIST_DEV:
 		reply.len = 0;
 		break;
-	case STMF_SSD_CREATE_DEV:
+	case STMFSSD_CREATE_DEV:
 		rc = stmf_ssd_create_dev(sp, arg, mode, crp);
 		break;
-	case STMF_SSD_REMOVE_DEV:
+	case STMFSSD_REMOVE_DEV:
 		rc = stmf_ssd_remove_dev(sp, arg, mode, crp);
 		break;
 	default:
