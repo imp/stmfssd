@@ -27,8 +27,8 @@ typedef struct {
 #define	SSC_TASK_STATUS_PENDING		0x00000001
 #define	SSC_TASK_ABORTED		0x00000002
 
-extern stmf_status_t lu_create(stmf_ssd_state_t *);
-extern void lu_remove(stmf_ssd_state_t *);
+extern stmf_status_t lu_create(stmfssd_state_t *);
+extern void lu_remove(stmfssd_state_t *);
 
 typedef struct {
 	uint8_t		cdb0;

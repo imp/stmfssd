@@ -28,7 +28,7 @@
 void
 ssc_inquiry(scsi_task_t *task, stmf_data_buf_t *dbuf)
 {
-	stmf_ssd_state_t	*sp;
+	stmfssd_state_t		*sp;
 	ssc_command_t		*scmd;
 	spc3_inquiry_cdb_t	*inq;
 	void			*buf;

@@ -112,7 +112,7 @@ ssc_info(uint32_t cmd, stmf_lu_t *lup, void *arg, uint8_t *buf,
 }
 
 stmf_status_t
-lu_create(stmf_ssd_state_t *sp)
+lu_create(stmfssd_state_t *sp)
 {
 	stmf_lu_t		*lup;
 	scsi_devid_desc_t	*devid = (scsi_devid_desc_t *)sp->did;
@@ -152,7 +152,7 @@ lu_create(stmf_ssd_state_t *sp)
 }
 
 void
-lu_remove(stmf_ssd_state_t *sp)
+lu_remove(stmfssd_state_t *sp)
 {
 	/* XXX Make sure there is no pending IO on this LU */
 	if (stmf_deregister_lu(sp->lup) != STMF_SUCCESS) {

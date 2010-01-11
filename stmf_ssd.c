@@ -29,7 +29,7 @@
 
 #define	STMF_SSDNAME	"stmf_ssd"
 
-static void *stmf_ssd_statep;
+static void *stmfssd_statep;
 
 static void
 stmf_ssd_lp_cb(stmf_lu_provider_t *lp, int cmd, void *arg, uint32_t flag)
@@ -40,11 +40,11 @@ static int
 stmf_ssd_open(dev_t *devp, int flag, int otyp, cred_t *cp)
 {
 	int		instance;
-	stmf_ssd_state_t	*sp;
+	stmfssd_state_t	*sp;
 
 	instance = getminor(*devp);
 
-	sp = ddi_get_soft_state(stmf_ssd_statep, instance);
+	sp = ddi_get_soft_state(stmfssd_statep, instance);
 
 	if (sp == NULL)
 		return (ENXIO);
@@ -62,11 +62,11 @@ static int
 stmf_ssd_close(dev_t dev, int flag, int otyp, cred_t *cp)
 {
 	int		instance;
-	stmf_ssd_state_t	*sp;
+	stmfssd_state_t	*sp;
 
 	instance = getminor(dev);
 
-	sp = ddi_get_soft_state(stmf_ssd_statep, instance);
+	sp = ddi_get_soft_state(stmfssd_statep, instance);
 
 	if (sp == NULL)
 		return (ENXIO);
@@ -94,13 +94,13 @@ stmf_ssd_close(dev_t dev, int flag, int otyp, cred_t *cp)
 #define	BUF_SIZE		128
 
 static int
-stmf_ssd_create_dev(stmf_ssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
+stmf_ssd_create_dev(stmfssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 {
 	char			buf[BUF_SIZE];
 	stmf_ssd_cmd_t		cmd;
 	dev_t			dev;
 	minor_t			minor;
-	stmf_ssd_state_t		*nsp;
+	stmfssd_state_t		*nsp;
 	stmf_ssd_create_dev_cmd_t	*cdcp;
 
 	/* Bring the command in */
@@ -124,18 +124,18 @@ stmf_ssd_create_dev(stmf_ssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 	cdcp = (stmf_ssd_create_dev_cmd_t *)buf;
 
 	/* Search for first available minor number */
-	for (minor = 1; ddi_get_soft_state(stmf_ssd_statep, minor) != NULL; minor++)
+	for (minor = 1; ddi_get_soft_state(stmfssd_statep, minor) != NULL; minor++)
 		;
 
 	dev = makedevice(ddi_driver_major(sp->dip), minor);
 
 	/* Allocate soft state for internal book-keeping */
-	if (ddi_soft_state_zalloc(stmf_ssd_statep, minor) != DDI_SUCCESS) {
+	if (ddi_soft_state_zalloc(stmfssd_statep, minor) != DDI_SUCCESS) {
 		cmn_err(CE_WARN, "Cannot allocate soft state for new device");
 		return (ENOMEM);
 	}
 
-	nsp = ddi_get_soft_state(stmf_ssd_statep, minor);
+	nsp = ddi_get_soft_state(stmfssd_statep, minor);
 
 	/* Copy the LU provider info */
 	nsp->lpp = sp->lpp;
@@ -150,7 +150,7 @@ stmf_ssd_create_dev(stmf_ssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 
 	if (lu_create(nsp) == STMF_FAILURE) {
 		refstr_rele(nsp->dev);
-		ddi_soft_state_free(stmf_ssd_statep, minor);
+		ddi_soft_state_free(stmfssd_statep, minor);
 		return (ENOMEM);
 	}
 
@@ -160,7 +160,7 @@ stmf_ssd_create_dev(stmf_ssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 	    NULL) != DDI_SUCCESS) {
 		lu_remove(nsp);
 		refstr_rele(nsp->dev);
-		ddi_soft_state_free(stmf_ssd_statep, minor);
+		ddi_soft_state_free(stmfssd_statep, minor);
 		return (ENXIO);
 	}
 
@@ -172,18 +172,18 @@ stmf_ssd_create_dev(stmf_ssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 		ddi_remove_minor_node(sp->dip, buf);
 		lu_remove(nsp);
 		refstr_rele(nsp->dev);
-		ddi_soft_state_free(stmf_ssd_statep, minor);
+		ddi_soft_state_free(stmfssd_statep, minor);
 	}
 
 	return (0);
 }
 
 static int
-stmf_ssd_remove_dev(stmf_ssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
+stmf_ssd_remove_dev(stmfssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 {
 	stmf_ssd_cmd_t		cmd;
 	stmf_ssd_remove_dev_cmd_t	dev;
-	stmf_ssd_state_t		*nsp;
+	stmfssd_state_t		*nsp;
 	char			buf[BUF_SIZE];
 
 	/* Bring the command in */
@@ -203,7 +203,7 @@ stmf_ssd_remove_dev(stmf_ssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 		return (EFAULT);
 	}
 
-	nsp = ddi_get_soft_state(stmf_ssd_statep, dev.minor);
+	nsp = ddi_get_soft_state(stmfssd_statep, dev.minor);
 	if (nsp == NULL) {
 		return (EINVAL);
 	}
@@ -214,12 +214,12 @@ stmf_ssd_remove_dev(stmf_ssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 	ddi_remove_minor_node(sp->dip, buf);
 	lu_remove(nsp);
 	refstr_rele(nsp->dev);
-	ddi_soft_state_free(stmf_ssd_statep, dev.minor);
+	ddi_soft_state_free(stmfssd_statep, dev.minor);
 	return (0);
 }
 
 static int
-stmf_ssd_ctl_ioctl(stmf_ssd_state_t *sp, int cmd, intptr_t arg, int mode,
+stmf_ssd_ctl_ioctl(stmfssd_state_t *sp, int cmd, intptr_t arg, int mode,
     cred_t *crp, int *rvp)
 {
 	int		rc = 0;
@@ -253,7 +253,7 @@ stmf_ssd_ctl_ioctl(stmf_ssd_state_t *sp, int cmd, intptr_t arg, int mode,
 }
 
 static int
-stmf_ssd_lu_ioctl(stmf_ssd_state_t *sp, int cmd, intptr_t arg, int mode,
+stmf_ssd_lu_ioctl(stmfssd_state_t *sp, int cmd, intptr_t arg, int mode,
     cred_t *cp, int *rvp)
 {
 	return (0);
@@ -263,11 +263,11 @@ static int
 stmf_ssd_ioctl(dev_t dev, int cmd, intptr_t arg, int mode, cred_t *cp, int *rvp)
 {
 	int		instance;
-	stmf_ssd_state_t	*sp;
+	stmfssd_state_t	*sp;
 
 	instance = getminor(dev);
 
-	sp = ddi_get_soft_state(stmf_ssd_statep, instance);
+	sp = ddi_get_soft_state(stmfssd_statep, instance);
 
 	if (sp == NULL)
 		return (ENXIO);
@@ -304,14 +304,14 @@ static int
 stmf_ssd_getinfo(dev_info_t *dip, ddi_info_cmd_t cmd, void *arg, void **rp)
 {
 	int		instance;
-	stmf_ssd_state_t	*sp;
+	stmfssd_state_t	*sp;
 	int		rc;
 
 	instance = getminor((dev_t)arg);
 
 	switch (cmd) {
 	case DDI_INFO_DEVT2DEVINFO:
-		sp = ddi_get_soft_state(stmf_ssd_statep, instance);
+		sp = ddi_get_soft_state(stmfssd_statep, instance);
 		if (sp != NULL) {
 			*rp = sp->dip;
 			rc = DDI_SUCCESS;
@@ -334,7 +334,7 @@ stmf_ssd_getinfo(dev_info_t *dip, ddi_info_cmd_t cmd, void *arg, void **rp)
 static int
 stmf_ssd_attach(dev_info_t *dip, ddi_attach_cmd_t cmd)
 {
-	stmf_ssd_state_t	*sp;
+	stmfssd_state_t	*sp;
 	int		instance;
 
 	instance = ddi_get_instance(dip);
@@ -349,10 +349,10 @@ stmf_ssd_attach(dev_info_t *dip, ddi_attach_cmd_t cmd)
 		return (DDI_FAILURE);
 	}
 
-	if (ddi_soft_state_zalloc(stmf_ssd_statep, instance) != DDI_SUCCESS)
+	if (ddi_soft_state_zalloc(stmfssd_statep, instance) != DDI_SUCCESS)
 		return (DDI_FAILURE);
 
-	sp = ddi_get_soft_state(stmf_ssd_statep, instance);
+	sp = ddi_get_soft_state(stmfssd_statep, instance);
 
 	sp->dip = dip;
 
@@ -365,7 +365,7 @@ stmf_ssd_attach(dev_info_t *dip, ddi_attach_cmd_t cmd)
 
 	if (stmf_register_lu_provider(sp->lpp) != STMF_SUCCESS) {
 		stmf_free(sp->lpp);
-		ddi_soft_state_free(stmf_ssd_statep, instance);
+		ddi_soft_state_free(stmfssd_statep, instance);
 		return (DDI_FAILURE);
 	}
 
@@ -380,7 +380,7 @@ stmf_ssd_attach(dev_info_t *dip, ddi_attach_cmd_t cmd)
 			    "during attach failure; please reboot");
 		}
 		stmf_free(sp->lpp);
-		ddi_soft_state_free(stmf_ssd_statep, instance);
+		ddi_soft_state_free(stmfssd_statep, instance);
 		return (DDI_FAILURE);
 	}
 
@@ -392,7 +392,7 @@ stmf_ssd_attach(dev_info_t *dip, ddi_attach_cmd_t cmd)
 static int
 stmf_ssd_detach(dev_info_t *dip, ddi_detach_cmd_t cmd)
 {
-	stmf_ssd_state_t	*sp;
+	stmfssd_state_t	*sp;
 	int		instance;
 
 	instance = ddi_get_instance(dip);
@@ -407,7 +407,7 @@ stmf_ssd_detach(dev_info_t *dip, ddi_detach_cmd_t cmd)
 		return (DDI_FAILURE);
 	}
 
-	sp = ddi_get_soft_state(stmf_ssd_statep, instance);
+	sp = ddi_get_soft_state(stmfssd_statep, instance);
 
 	/* XXX Make sure there are no LU instances anymore */
 	/*
@@ -421,7 +421,7 @@ stmf_ssd_detach(dev_info_t *dip, ddi_detach_cmd_t cmd)
 
 	stmf_free(sp->lpp);
 
-	ddi_soft_state_free(stmf_ssd_statep, instance);
+	ddi_soft_state_free(stmfssd_statep, instance);
 
 	return (DDI_SUCCESS);
 }
@@ -457,12 +457,12 @@ _init(void)
 {
 	int rc;
 
-	rc = ddi_soft_state_init(&stmf_ssd_statep, sizeof (stmf_ssd_state_t), 0);
+	rc = ddi_soft_state_init(&stmfssd_statep, sizeof (stmfssd_state_t), 0);
 	if (rc != 0)
 		return (rc);
 	rc = mod_install(&stmf_ssd_modlinkage);
 	if (rc != 0)
-		ddi_soft_state_fini(&stmf_ssd_statep);
+		ddi_soft_state_fini(&stmfssd_statep);
 	return (rc);
 }
 
@@ -479,6 +479,6 @@ _fini(void)
 
 	rc = mod_remove(&stmf_ssd_modlinkage);
 	if (rc == 0)
-		ddi_soft_state_fini(&stmf_ssd_statep);
+		ddi_soft_state_fini(&stmfssd_statep);
 	return (rc);
 }

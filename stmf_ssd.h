@@ -28,7 +28,7 @@ typedef struct {
         size_t			size;	/* Device size in logical blocks */
 	size_t			blocksize;	/* Block size (512 bytes) */
 	uint8_t			did[16];	/* SPC-3 SCSI device id */
-} stmf_ssd_state_t;
+} stmfssd_state_t;
 
 #ifdef	__cplusplus
 }
