@@ -4,7 +4,8 @@
 #
 .KEEP_STATE:
 
-UTS_ROOT	= /data/opensolaris/onnv-gate/usr/src/uts
+ON_GATE		= /data/opensolaris/onnv-gate
+UTS_ROOT	= $(ON_GATE)/usr/src/uts
 
 DATE_CMD	= /bin/date +%Y.%m.%d
 REV		= $(DATE_CMD:sh)
