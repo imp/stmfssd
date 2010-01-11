@@ -56,10 +56,10 @@ $(TARGET64): $(OBJS64)
 cstyle:
 	$(CSTYLE) -chpPv $(SRCS)
 clean:
-	$(RM) $(TARGET64) $(OBJS64)
-	$(RM) -r 64
+	$(RM) $(TARGET32) $(OBJS32) $(TARGET64) $(OBJS64)
+	$(RM) -r 32 64
 	$(RM) -r packages
 
-pkg:	$(TARGET64)
+pkg:	$(TARGET32) $(TARGET64)
 	-[ ! -d packages ] && mkdir packages
 	pkgmk -o -d packages -v $(VERSION)
