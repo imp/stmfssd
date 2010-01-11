@@ -2,6 +2,8 @@ This repository contains source for COMSTAR SCSI Tape emulation system
 
 How to build the sources ?
 
-You will need a copy of ON gate available somewhere.
-1. Set ON_GATE to point to the ON root directory.
-2. Run "make"
+1. Bring the sources.
+2. Run "make".
+
+How to install the binaries ?
+TBD

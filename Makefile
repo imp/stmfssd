@@ -4,9 +4,6 @@
 #
 .KEEP_STATE:
 
-ON_GATE		= /data/opensolaris/onnv-gate
-UTS_ROOT	= $(ON_GATE)/usr/src/uts
-
 DATE_CMD	= /bin/date +%Y.%m.%d
 REV		= $(DATE_CMD:sh)
 HEAD_CMD	= git show-ref --head --hash --abbrev HEAD
@@ -30,7 +27,6 @@ OBJS64		= $(SRCS:%.c=64/%.o)
 
 MACH_32		= -m32
 MACH_64		= -m64 -xmodel=kernel
-INCLUDES	= -I$(UTS_ROOT)/common
 C99MODE		= -xc99=%all
 CFLAGS		= -v -D_KERNEL $(C99MODE) $(INCLUDES)
 LDFLAGS		= -dy -Ndrv/stmf
