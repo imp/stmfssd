@@ -103,7 +103,7 @@ scsi_cmd_entry_t	scsi_cmd_table[] = {
 	{0x22,				ssc_invalid_cmd},
 	{0x23,				ssc_invalid_cmd},
 	{0x24,				ssc_invalid_cmd},
-	{SPC3_CMD_READ_CAPACITY10,	ssc_read_capacity10},
+	{0x25,				ssc_invalid_cmd},
 	{0x26,				ssc_invalid_cmd},
 	{0x27,				ssc_invalid_cmd},
 	{SPC3_CMD_READ10,		ssc_read},
