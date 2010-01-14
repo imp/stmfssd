@@ -4,6 +4,6 @@
 #
 .KEEP_STATE:
 
-all:
-	cd stmf_ssd; $(MAKE)
-	cd vtadm; $(MAKE)
+all clean:
+	cd stmf_ssd; $(MAKE) $@
+	cd vtadm; $(MAKE) $@
