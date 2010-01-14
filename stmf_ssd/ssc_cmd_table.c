@@ -4,7 +4,7 @@
  */
 
 /*
- * SSC command router
+ * SSC2 command router
  */
 
 #include <sys/types.h>
@@ -66,10 +66,10 @@ ssc_send_data(scsi_task_t *task, stmf_data_buf_t *dbuf,
 scsi_cmd_entry_t	scsi_cmd_table[] = {
 	{SPC3_CMD_TEST_UNIT_READY,	ssc_test_unit_ready},
 	{0x01,				ssc_invalid_cmd},
-	{0x02,				ssc_invalid_cmd},
+	{SPC3_CMD_REWIND,		ssc_invalid_cmd},
 	{SPC3_CMD_REQUEST_SENSE,	ssc_request_sense},
 	{SPC3_CMD_FORMAT,		ssc_invalid_cmd},
-	{0x05,				ssc_invalid_cmd},
+	{SPC3_CMD_READ_BLOCK_LIMITS,	ssc_invalid_cmd},
 	{0x06,				ssc_invalid_cmd},
 	{0x07,				ssc_invalid_cmd},
 	{SPC3_CMD_READ6,		ssc_read},
@@ -81,20 +81,20 @@ scsi_cmd_entry_t	scsi_cmd_table[] = {
 	{0x0E,				ssc_invalid_cmd},
 	{0x0F,				ssc_invalid_cmd},
 
-	{0x10,				ssc_invalid_cmd},
-	{0x11,				ssc_invalid_cmd},
+	{SPC3_CMD_WRITE_FILEMARKS6,	ssc_invalid_cmd},
+	{SPC3_CMD_SPACE6,		ssc_invalid_cmd},
 	{SPC3_CMD_INQUIRY,		ssc_inquiry},
 	{0x13,				ssc_invalid_cmd},
 	{0x14,				ssc_invalid_cmd},
-	{0x15,				ssc_invalid_cmd},
+	{SPC3_CMD_MODE_SELECT6,		ssc_invalid_cmd},
 	{0x16,				ssc_invalid_cmd},
 	{0x17,				ssc_invalid_cmd},
 	{0x18,				ssc_invalid_cmd},
 	{SPC3_CMD_ERASE6,		ssc_erase},
-	{0x1A,				ssc_invalid_cmd},
+	{SPC3_CMD_MODE_SENSE6,		ssc_invalid_cmd},
 	{0x1B,				ssc_invalid_cmd},
 	{0x1C,				ssc_invalid_cmd},
-	{0x1D,				ssc_invalid_cmd},
+	{SPC3_CMD_SEND_DIAGNOSTIC,	ssc_invalid_cmd},
 	{0x1E,				ssc_invalid_cmd},
 	{0x1F,				ssc_invalid_cmd},
 
@@ -109,8 +109,8 @@ scsi_cmd_entry_t	scsi_cmd_table[] = {
 	{SPC3_CMD_READ10,		ssc_read},
 	{0x29,				ssc_invalid_cmd},
 	{SPC3_CMD_WRITE10,		ssc_write},
-	{0x2B,				ssc_invalid_cmd},
-	{0x2C,				ssc_invalid_cmd},
+	{SPC3_CMD_LOCATE10,		ssc_invalid_cmd},
+	{SPC3_CMD_ERASE10,		ssc_invalid_cmd},
 	{0x2D,				ssc_invalid_cmd},
 	{0x2E,				ssc_invalid_cmd},
 	{0x2F,				ssc_invalid_cmd},
@@ -119,7 +119,7 @@ scsi_cmd_entry_t	scsi_cmd_table[] = {
 	{0x31,				ssc_invalid_cmd},
 	{0x32,				ssc_invalid_cmd},
 	{0x33,				ssc_invalid_cmd},
-	{0x34,				ssc_invalid_cmd},
+	{SPC3_CMD_READ_POSITION,	ssc_invalid_cmd},
 	{0x35,				ssc_invalid_cmd},
 	{0x36,				ssc_invalid_cmd},
 	{0x37,				ssc_invalid_cmd},
@@ -136,7 +136,7 @@ scsi_cmd_entry_t	scsi_cmd_table[] = {
 	{0x41,				ssc_invalid_cmd},
 	{0x42,				ssc_invalid_cmd},
 	{0x43,				ssc_invalid_cmd},
-	{0x44,				ssc_invalid_cmd},
+	{SPC3_CMD_REPORT_DENSITY_SUPPORT,ssc_invalid_cmd},
 	{0x45,				ssc_invalid_cmd},
 	{0x46,				ssc_invalid_cmd},
 	{0x47,				ssc_invalid_cmd},
@@ -163,8 +163,8 @@ scsi_cmd_entry_t	scsi_cmd_table[] = {
 	{0x5B,				ssc_invalid_cmd},
 	{0x5C,				ssc_invalid_cmd},
 	{0x5D,				ssc_invalid_cmd},
-	{0x5E,				ssc_invalid_cmd},
-	{0x5F,				ssc_invalid_cmd},
+	{SPC3_CMD_PERSISTENT_RESERVE_IN,ssc_invalid_cmd},
+	{SPC3_CMD_PERSISTENT_RESERVE_OUT,ssc_invalid_cmd},
 
 	{0x60,				ssc_invalid_cmd},
 	{0x61,				ssc_invalid_cmd},
@@ -200,7 +200,7 @@ scsi_cmd_entry_t	scsi_cmd_table[] = {
 	{0x7E,				ssc_invalid_cmd},
 	{0x7F,				ssc_invalid_cmd},
 
-	{0x80,				ssc_invalid_cmd},
+	{SPC3_CMD_WRITE_FILEMARKS16,	ssc_invalid_cmd},
 	{0x81,				ssc_invalid_cmd},
 	{0x82,				ssc_invalid_cmd},
 	{0x83,				ssc_invalid_cmd},
@@ -219,7 +219,7 @@ scsi_cmd_entry_t	scsi_cmd_table[] = {
 
 	{0x90,				ssc_invalid_cmd},
 	{0x91,				ssc_invalid_cmd},
-	{0x92,				ssc_invalid_cmd},
+	{SPC3_CMD_LOCATE16,		ssc_invalid_cmd},
 	{0x93,				ssc_invalid_cmd},
 	{0x94,				ssc_invalid_cmd},
 	{0x95,				ssc_invalid_cmd},
