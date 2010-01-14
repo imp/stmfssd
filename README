@@ -1,9 +1,19 @@
 This repository contains source for COMSTAR SCSI Tape emulation system
 
+What is emulated ?
+==================
+
+The current emulation target is SSC2 complient device.
+
+
 How to build the sources ?
+==========================
 
 1. Bring the sources.
 2. Run "make".
 
+
 How to install the binaries ?
+=============================
+
 TBD
