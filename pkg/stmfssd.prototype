@@ -1,0 +1,10 @@
+!stmfssd=../stmf_ssd
+i pkginfo=stmfssd.pkginfo
+i postinstall=stmfssd.postinstall
+i preremove=stmfssd.preremove
+d none kernel ? ? ?
+d none kernel/drv ? ? ?
+d none kernel/drv/amd64 ? ? ?
+f none kernel/drv/stmf_ssd=$stmfssd/32/stmf_ssd 0644 root sys
+f none kernel/drv/amd64/stmf_ssd=$stmfssd/64/stmf_ssd 0644 root sys
+f none kernel/drv/stmf_ssd.conf=$stmfssd/stmf_ssd.conf 0644 root sys

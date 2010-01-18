@@ -1,0 +1,6 @@
+PKG="stmfssd"
+NAME="COMSTAR SSD Target Provider driver"
+ARCH="i386"
+CATEGORY="system"
+BASEDIR="/"
+CLASSES="none"

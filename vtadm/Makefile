@@ -31,8 +31,3 @@ cstyle:
 	$(CSTYLE) -chpPv $(SRCS)
 clean:
 	$(RM) $(TARGET) $(OBJS)
-	$(RM) -r packages
-
-pkg:	$(TARGET32) $(TARGET64)
-	-[ ! -d packages ] && mkdir packages
-	pkgmk -o -d packages -v $(VERSION)

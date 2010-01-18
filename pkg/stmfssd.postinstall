@@ -1,0 +1,7 @@
+if [ "${BASEDIR:=/}" = "/" ]
+then
+	ADD_DRV="add_drv"
+else
+	ADD_DRV="add_drv -b ${BASEDIR}"
+fi
+$ADD_DRV -n stmf_ssd

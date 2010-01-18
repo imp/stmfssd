@@ -7,3 +7,6 @@
 all clean:
 	cd stmf_ssd; $(MAKE) $@
 	cd vtadm; $(MAKE) $@
+
+pkg: all
+	cd pkg; $(MAKE) $@
