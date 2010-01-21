@@ -20,7 +20,9 @@ SRCS		= \
 	ssc_test_unit_ready.c \
 	ssc_erase.c \
 	ssc_request_sense.c \
-	ssc_inquiry.c
+	ssc_inquiry.c	\
+	ssc_read.c	\
+	ssc_write.c
 
 OBJS32		= $(SRCS:%.c=32/%.o)
 OBJS64		= $(SRCS:%.c=64/%.o)
