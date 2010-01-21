@@ -357,7 +357,7 @@ stmf_ssd_attach(dev_info_t *dip, ddi_attach_cmd_t cmd)
 		return (DDI_FAILURE);
 	}
 
-	if (ddi_create_minor_node(dip, "ctl", S_IFCHR,
+	if (ddi_create_minor_node(dip, "admin", S_IFCHR,
 	    instance, DDI_PSEUDO, 0) != DDI_SUCCESS) {
 		if (stmf_deregister_lu_provider(sp->lpp) != STMF_SUCCESS) {
 			/*
@@ -431,7 +431,7 @@ static struct dev_ops stmf_ssd_dev_ops = {
 
 static struct modldrv stmf_ssd_modldrv = {
 	.drv_modops	= &mod_driverops,
-	.drv_linkinfo	= "Virtual ted Device v2",
+	.drv_linkinfo	= "COMSTAR SSD v2",
 	.drv_dev_ops	= &stmf_ssd_dev_ops
 };
 
