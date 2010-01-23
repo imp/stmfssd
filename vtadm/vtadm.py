@@ -6,8 +6,21 @@
 import fcntl
 import optparse
 import os
+import struct
 
 STMFSSDADMDEV = "/devices/pseudo/stmf_ssd@0:admin"
+
+CMDHEADER = "IIL"
+CMDREPLY  = "IIL"
+STMFSSD_IOCTL =	0x53534400 # "SSDx"
+STMFSSD_GET_VERSION = (STMFSSD_IOCTL | 0)
+STMFSSD_LIST_DEV = (STMFSSD_IOCTL | 1)
+STMFSSD_CREATE_DEV = (STMFSSD_IOCTL | 2)
+STMFSSD_REMOVE_DEV = (STMFSSD_IOCTL | 3)
+
+STMFSSD_ABI_VERSION_0 = 0
+STMFSSD_ABI_VERSION_1 = 1
+STMFSSD_ABI_VERSION = STMFSSD_ABI_VERSION_1
 
 class VTAdmException(Exception):
     def __init__(self, msg=None):
@@ -21,7 +34,10 @@ class StmfSsdAdmin():
             raise VTAdmException("Cannot open stmfssd control device")
 
     def status(self):
-        fcntl.ioctl(self.ctldev, op, arg, mutate_flag)
+        arg = struct.pack(CMDHEADER, STMFSSD_ABI_VERSION, 0, 0)
+        fcntl.ioctl(self.ctldev, STMFSSD_GET_VERSION, arg)
+	ver, status, len = struct.unpack(arg, CMDREPLY)
+	print "Version %s, Status = %s, len = %s" % (ver, status, len)
 	print "Status OK"
 
 
