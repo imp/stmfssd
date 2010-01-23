@@ -207,7 +207,7 @@ stmf_ssd_remove_dev(stmfssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 }
 
 static int
-stmf_ssd_ctl_ioctl(stmfssd_state_t *sp, int cmd, intptr_t arg, int mode,
+stmf_ssd_admin_ioctl(stmfssd_state_t *sp, int cmd, intptr_t arg, int mode,
     cred_t *crp, int *rvp)
 {
 	int		rc = 0;
@@ -261,7 +261,7 @@ stmf_ssd_ioctl(dev_t dev, int cmd, intptr_t arg, int mode, cred_t *cp, int *rvp)
 		return (ENXIO);
 
 	if (instance == 0) {
-		return (stmf_ssd_ctl_ioctl(sp, cmd, arg, mode, cp, rvp));
+		return (stmf_ssd_admin_ioctl(sp, cmd, arg, mode, cp, rvp));
 	} else {
 		return (stmf_ssd_lu_ioctl(sp, cmd, arg, mode, cp, rvp));
 	}
@@ -431,7 +431,7 @@ static struct dev_ops stmf_ssd_dev_ops = {
 
 static struct modldrv stmf_ssd_modldrv = {
 	.drv_modops	= &mod_driverops,
-	.drv_linkinfo	= "COMSTAR SSD v2",
+	.drv_linkinfo	= "COMSTAR SSD v1",
 	.drv_dev_ops	= &stmf_ssd_dev_ops
 };
 
