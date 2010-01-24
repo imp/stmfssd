@@ -24,7 +24,7 @@ extern "C" {
 
 typedef struct {
 	uint32_t	version;	/* ABI version    */
-	uint32_t	opcode;		/* Operation code */
+	uint32_t	subcode;	/* Operation subcode, if any */
 	size_t		len;		/* Payload length */
 } stmfssd_cmd_t;
 
