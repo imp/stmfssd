@@ -12,7 +12,11 @@ STMFSSDADMDEV = "/devices/pseudo/stmf_ssd@0:admin"
 
 CMDHEADER = "IIL"
 CMDREPLY  = "IIL"
+CMDADD = CMDHEADER + "8s16s4s"
+CMDREM = CMDHEADER + "I"
+
 STMFSSD_IOCTL =	0x53534400 # "SSDx"
+
 STMFSSD_GET_VERSION = (STMFSSD_IOCTL | 0)
 STMFSSD_LIST_DEV = (STMFSSD_IOCTL | 1)
 STMFSSD_CREATE_DEV = (STMFSSD_IOCTL | 2)
@@ -40,6 +44,15 @@ class StmfSsdAdmin():
 	print "Version %s, Status = %s, len = %s" % (ver, status, len)
 	print "Status OK"
 
+    def add_tape(self):
+        arg = struct.pack(CMDADD, STMFSSD_ABI_VERSION, 0, 28,
+	    "GRIGALE ", "Solaris STMFTape", "J001")
+        fcntl.ioctl(self.ctldev, STMFSSD_CREATE_DEV, arg)
+	ver, status, len = struct.unpack(arg, CMDREPLY)
+	print "[add_tape] version %s, Status = %s, len = %s" % (ver, status, len)
+
+    def rem_tape(self, minor):
+        pass
 
 def parse():
     usage = "Usage: %prog verb [options]"
