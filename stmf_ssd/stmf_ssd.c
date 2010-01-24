@@ -84,11 +84,8 @@ stmf_ssd_close(dev_t dev, int flag, int otyp, cred_t *cp)
  * The order of creation:
  * 1. Allocate new minor number
  * 2. Allocate soft state
- * 3. Store the backing store device/file name
- * 4. Get LDI identification
- * 5. open the backing store device
- * 6. Register LU with STMF
- * 7. Create minor nodes
+ * 3. Register LU with STMF
+ * 4. Create minor nodes
  */
 #define	BUF_SIZE		128
 
@@ -139,16 +136,12 @@ stmf_ssd_create_dev(stmfssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 	/* Copy the LU provider info */
 	nsp->lpp = sp->lpp;
 
-	/* Copy the device name */
-	nsp->dev = refstr_alloc(cdcp->dev);
-
 	/* Copy device INQUIRY identification */
 	bcopy(cdcp->vendor, nsp->vid, 8);
 	bcopy(cdcp->product, nsp->pid, 16);
 	bcopy(cdcp->fwrev, nsp->fwrev, 4);
 
 	if (lu_create(nsp) == STMF_FAILURE) {
-		refstr_rele(nsp->dev);
 		ddi_soft_state_free(stmfssd_statep, minor);
 		return (ENOMEM);
 	}
@@ -158,7 +151,6 @@ stmf_ssd_create_dev(stmfssd_state_t *sp, intptr_t arg, int mode, cred_t *crp)
 	if (ddi_create_minor_node(sp->dip, buf, S_IFCHR, minor, DDI_PSEUDO,
 	    NULL) != DDI_SUCCESS) {
 		lu_remove(nsp);
-		refstr_rele(nsp->dev);
 		ddi_soft_state_free(stmfssd_statep, minor);
 		return (ENXIO);
 	}

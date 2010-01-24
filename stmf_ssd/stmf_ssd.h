@@ -19,15 +19,16 @@ typedef struct {
 	dev_info_t		*dip;	/* devinfo */
 	stmf_lu_provider_t	*lpp;	/* LU provider */
 	stmf_lu_t		*lup;	/* LU vector */
-	refstr_t		*dev;	/* Target device name */
 
 	/* SCSI-related properties */
         char                    vid[8];
         char                    pid[16];
         char                    fwrev[4];
-        size_t			size;	/* Device size in logical blocks */
-	size_t			blocksize;	/* Block size (512 bytes) */
 	uint8_t			did[16];	/* SPC-3 SCSI device id */
+
+	/* Media properties */
+	refstr_t		*dev;		/* Backing store device name */
+	size_t			size;		/* Media size in bytes */
 } stmfssd_state_t;
 
 #ifdef	__cplusplus

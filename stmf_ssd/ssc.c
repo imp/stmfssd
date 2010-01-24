@@ -123,7 +123,7 @@ lu_create(stmfssd_state_t *sp)
 	}
 
 	devid->ident_length = 0x10;
-	if (stmf_scsilib_uniq_lu_id(COMPANY_ID_GRIGALE,
+	if (stmf_scsilib_uniq_lu_id(SSD_UNIQUE_ID,
 	    devid) != STMF_SUCCESS) {
 		stmf_free(lup);
 		return (STMF_FAILURE);

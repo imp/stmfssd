@@ -35,18 +35,13 @@ typedef struct {
 } stmfssd_reply_t;
 
 typedef struct {
-	int		devtype;	/* Emulated tape type */
 	char		vendor[8];	/* INQUIRY Vendor ID */
 	char		product[16];	/* INQUIRY Product ID */
 	char		fwrev[4];	/* INQUIRY FW Revision */
-	int		unused1;	/* Placeholder */
-	int		unused2;	/* Placeholder */
-	char		dev[1];		/* The unique device name */
 } stmfssd_create_dev_cmd_t;
 
 typedef struct {
 	minor_t		minor;		/* Minor node to remove */
-        char            dev[1];         /* Device name to remove */
 } stmfssd_remove_dev_cmd_t;
 
 #ifdef	__cplusplus

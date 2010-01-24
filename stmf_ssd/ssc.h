@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-#define	COMPANY_ID_GRIGALE	0x475353
+#define	SSD_UNIQUE_ID	0x475353
 
 typedef struct {
 	uint32_t	flags;		/* Task flags */
